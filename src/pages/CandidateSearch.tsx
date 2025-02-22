@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { searchGithub, searchGithubUser } from '../api/API';
 import { Candidate } from '../interfaces/Candidate.interface';
-
+import AddCandidate from '../components/AddCandidate';
 // WHEN the candidate search page loads
 // THEN the information for one candidate should be displayed, including the candidate's name, username, location, avatar, email, html_url, and company
 
@@ -41,6 +41,7 @@ const CandidateSearch = () => {
       <a href={candidate.html_url} target="_blank" rel="noopener noreferrer">
         GitHub Profile
       </a>
+      <AddCandidate />
     </div>
   );
 };
