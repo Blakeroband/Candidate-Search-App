@@ -13,7 +13,7 @@ const SavedCandidates = () => {
 
   return (
     <div>
-      <h1>Saved Candidates</h1>
+      <h1>Potential Candidates</h1>
       {candidates.length === 0 ? (
         <p>No candidates have been saved.</p>
       ) : (

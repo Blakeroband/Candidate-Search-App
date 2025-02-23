@@ -2,24 +2,29 @@ import { useState, useEffect } from 'react';
 import { searchGithub, searchGithubUser } from '../api/API';
 import { Candidate } from '../interfaces/Candidate.interface';
 import AddCandidate from '../components/AddCandidate';
+import NextCandidate from '../components/NextCandidate';
 
 const CandidateSearch = () => {
-  const [candidate, setCandidate] = useState<Candidate | null>(null);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const fetchNewCandidate = () => {
+  const fetchNewCandidates = () => {
     searchGithub().then((users: Candidate[]) => {
       if (users.length > 0) {
-        searchGithubUser(users[0].login).then((user) => {
-          if (user) setCandidate(user);
+        const candidatePromises = users.map(user => searchGithubUser(user.login));
+        Promise.all(candidatePromises).then(fetchedCandidates => {
+          setCandidates(fetchedCandidates.filter(candidate => candidate !== null));
+          setCurrentIndex(0);
         });
       } else {
-        setCandidate(null);
+        setCandidates([]);
+        setCurrentIndex(0);
       }
     });
   };
 
   useEffect(() => {
-    fetchNewCandidate();
+    fetchNewCandidates();
   }, []);
 
   const handleAddCandidate = (newCandidate: Candidate) => {
@@ -28,12 +33,18 @@ const CandidateSearch = () => {
     const candidates = savedCandidates ? JSON.parse(savedCandidates) : [];
     candidates.push(newCandidate);
     localStorage.setItem('savedCandidates', JSON.stringify(candidates));
-    fetchNewCandidate();
+    fetchNewCandidates();
   };
 
-  if (!candidate) {
+  const handleNextCandidate = (index: number) => {
+    setCurrentIndex(index);
+  };
+
+  if (candidates.length === 0) {
     return <div>Loading...</div>;
   }
+
+  const candidate = candidates[currentIndex];
 
   return (
     <div>
@@ -48,7 +59,12 @@ const CandidateSearch = () => {
       <a href={candidate.html_url} target="_blank" rel="noopener noreferrer">
         GitHub Profile
       </a>
-      <AddCandidate candidate={candidate} onAddCandidate={handleAddCandidate}  />
+      <AddCandidate candidate={candidate} onAddCandidate={handleAddCandidate} />
+      <NextCandidate
+        candidates={candidates}
+        currentIndex={currentIndex}
+        onNextCandidate={handleNextCandidate}
+      />
     </div>
   );
 };
