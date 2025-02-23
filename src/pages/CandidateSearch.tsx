@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { searchGithub, searchGithubUser } from '../api/API';
 import { Candidate } from '../interfaces/Candidate.interface';
 import AddCandidate from '../components/AddCandidate';
-// WHEN the candidate search page loads
-// THEN the information for one candidate should be displayed, including the candidate's name, username, location, avatar, email, html_url, and company
 
 const CandidateSearch = () => {
   const [candidate, setCandidate] = useState<Candidate | null>(null);
@@ -24,6 +22,15 @@ const CandidateSearch = () => {
     fetchNewCandidate();
   }, []);
 
+  const handleAddCandidate = (newCandidate: Candidate) => {
+    console.log('saving candidate to localStorage:', newCandidate);
+    const savedCandidates = localStorage.getItem('savedCandidates');
+    const candidates = savedCandidates ? JSON.parse(savedCandidates) : [];
+    candidates.push(newCandidate);
+    localStorage.setItem('savedCandidates', JSON.stringify(candidates));
+    fetchNewCandidate();
+  };
+
   if (!candidate) {
     return <div>Loading...</div>;
   }
@@ -41,7 +48,7 @@ const CandidateSearch = () => {
       <a href={candidate.html_url} target="_blank" rel="noopener noreferrer">
         GitHub Profile
       </a>
-      <AddCandidate />
+      <AddCandidate candidate={candidate} onAddCandidate={handleAddCandidate}  />
     </div>
   );
 };

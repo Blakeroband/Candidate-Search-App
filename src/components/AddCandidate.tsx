@@ -1,24 +1,21 @@
-// WHEN I click the "+" button
-// THEN the candidate should be saved to the list of potential candidates and the next candidate's information should be displayed
-import { useState } from 'react';
+
 import { Candidate } from '../interfaces/Candidate.interface';
 
-const AddCandidate = () => {
-  const [candidate, setCandidate] = useState<Candidate | null>(null);
-  const [candidates, setCandidates] = useState<Candidate[]>(() => {
-      const savedCandidates = localStorage.getItem('savedCandidates'); 
-      return savedCandidates ? JSON.parse(savedCandidates) : [];
-  });
+interface AddCandidateProps {
+  candidate: Candidate | null;
+  onAddCandidate: (candidate: Candidate) => void;
+}
 
+const AddCandidate = ({ candidate, onAddCandidate }: AddCandidateProps) => {
 
   const handleAddCandidate = () => {
     if (candidate) {
-      const updatedCandidates = [...candidates, candidate];
-      setCandidates(updatedCandidates);
-      localStorage.setItem('savedCandidates', JSON.stringify(updatedCandidates));
-      setCandidate(null);
+      console.log('Adding candidate:', candidate);
+      onAddCandidate(candidate);
+    } else {
+      console.log('No candidate to add.');
     }
-  }
+  };
 
   return (
     <div>
