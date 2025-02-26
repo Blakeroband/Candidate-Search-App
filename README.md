@@ -13,7 +13,7 @@
   - [license](#license)
 
   ## installation
-  no installation needed. go to the url : and use the web application
+  no installation needed. go to the url https://candidate-search-app-wot3.onrender.com/ and use the web application
 
   ## contributions
   Jacobus Berghoefer, Github Copilot have been contributors to this project.
